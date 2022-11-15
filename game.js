@@ -1,6 +1,13 @@
 let playerCount = 0;
 let computerCount = 0;
+const buttons = document.querySelectorAll('button');
 
+//This disables the buttons after a winner is chosem
+function disableButtons(){
+    buttons.forEach(elem => {
+        elem.disabled = true;
+    });
+}
 
 /*This function is meant to get a random choice between rock paper and scissors*/
 function getComputerChoice(){
@@ -21,11 +28,12 @@ function getComputerChoice(){
 /*This function is used to play a game of rock, paper, scissors
  * it takes in a user input and compares it to the computers choice 
 **/
-function playRound(playerSelection, computerSelection){
+function playRound(playerSelection){
     player = playerSelection.toLowerCase();
+    computerSelection = getComputerChoice();
     computer = computerSelection.toLowerCase();
 
-    result = decideWinner(player, computer);
+    document.getElementById('result').innerHTML = decideWinner(player, computer);
 
     return result;
 }
@@ -74,31 +82,39 @@ function decideWinner(playerChoice, computerChoice){
             winner =  "Its a Tie!";
     }
 
+    winner = (winner + "<br><br>Player Score: " + playerCount + "<br>Computer Score: " + computerCount);
+    
+    if (playerCount == 5 || computerCount == 5){
+        if(playerCount > computerCount){
+            winner = "You WON it ALL! Congrats!!! ^o^";
+            winner = (winner + "<br><br>Player Score: " + playerCount + "<br>Computer Score: " + computerCount);
+            winner += "<br><br>Refresh to play again!";
+            disableButtons();
+        }
+        else if(playerCount < computerCount){
+            winner = "The Computer was better this time around...You lost :|";
+            winner = (winner + "<br><br>Player Score: " + playerCount + "<br>Computer Score: " + computerCount);
+            winner += "<br><br>Refresh to play again!";
+            disableButtons();
+        }
+        else{
+            winner = "Its a tie. Looks like youre just as good as your computer is.";
+            winner = (winner + "<br><br>Player Score: " + playerCount + "<br>Computer Score: " + computerCount);
+            winner += "<br><br>Refresh to play again!";
+            disableButtons();
+        }
+        playerCount = 0;
+        computerCount = 0;
+    }
+
     return winner;
 }
 
 
-/*This function is used to play a game of rock paper scissors for 5 rounds
- * The winner is the person who has the most points at the end of the game!
- */
-function game(){
-    for(let i = 0; i < 5; i++){
-        playerSelection = prompt("Choose: Rock, Paper, or Scissor?");
-        computerSelection = getComputerChoice();
-        result = playRound(playerSelection, computerSelection);
-        console.log(result);
-        console.log("The current score is: Player: " + playerCount + " " + "Computer: " + computerCount);
-    }
-
-    if(playerCount > computerCount){
-        console.log("You WON it ALL! Congrats!!! ^o^");
-    }
-    else if(playerCount < computerCount){
-        console.log("The Computer was better this time around...You lost :|");
-    }
-    else{
-        console.log("Its a tie. Looks like youre just as good as your computer is. ");
-    }
-    playerCount = 0;
-    computerCount = 0;
-}
+//Adding event listeners to the new buttons that were created
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        playRound(button.id);
+        console.log("THE button was pressed!!!");
+    });
+});
